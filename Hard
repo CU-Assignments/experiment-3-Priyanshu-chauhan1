@@ -1,0 +1,49 @@
+}
+    
+    public void markCourseCompleted(String courseName) {
+        completedCourses.put(courseName, true);
+    }
+    
+    public void enroll(String courseName) throws CourseFullException, PrerequisiteNotMetException {
+        Course course = courses.get(courseName);
+        
+        if (course.getPrerequisite() != null && !completedCourses.containsKey(course.getPrerequisite())) {
+            throw new PrerequisiteNotMetException(
+                "Complete " + course.getPrerequisite() + " before enrolling in " + courseName);
+        }
+        
+        if (course.maxStudents <= course.enrolledStudents) {
+            throw new CourseFullException("Course " + courseName + " is full");
+        }
+        
+        course.enrolledStudents++;
+        System.out.println("Successfully enrolled in " + courseName);
+    }
+    
+    public static void main(String[] args) {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        UniversityEnrollment system = new UniversityEnrollment();
+        
+        try {
+            System.out.print("Enroll in Course: ");
+            String course = scanner.nextLine();
+            
+            System.out.print("Prerequisite: ");
+            String prereq = scanner.nextLine();
+            
+            System.out.print("Status (completed/not completed): ");
+            String status = scanner.nextLine();
+            
+            if (status.equalsIgnoreCase("completed")) {
+                system.markCourseCompleted(prereq);
+            }
+            
+            system.enroll(course);
+            
+        } catch (PrerequisiteNotMetException | CourseFullException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
