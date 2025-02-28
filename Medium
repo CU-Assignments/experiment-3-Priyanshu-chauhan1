@@ -1,0 +1,54 @@
+class InsufficientBalanceException extends Exception {
+    public InsufficientBalanceException(String message) {
+        super(message);
+    }
+}
+
+class InvalidPinException extends Exception {
+    public InvalidPinException(String message) {
+        super(message);
+    }
+}
+
+class ATM {
+    private double balance = 3000.0;
+    private final int CORRECT_PIN = 1234;
+    
+    public void withdraw(int pin, double amount) throws InvalidPinException, InsufficientBalanceException {
+        try {
+            if (pin != CORRECT_PIN) {
+                throw new InvalidPinException("Invalid PIN entered");
+            }
+            
+            if (amount > balance) {
+                throw new InsufficientBalanceException("Insufficient balance. Current Balance: " + balance);
+            }
+            
+            balance -= amount;
+            System.out.println("Withdrawal successful. Amount withdrawn: " + amount);
+            
+        } finally {
+            System.out.println("Current Balance: " + balance);
+        }
+    }
+    
+    public static void main(String[] args) {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        ATM atm = new ATM();
+        
+        try {
+            System.out.print("Enter PIN: ");
+            int pin = scanner.nextInt();
+            
+            System.out.print("Withdraw Amount: ");
+            double amount = scanner.nextDouble();
+            
+            atm.withdraw(pin, amount);
+            
+        } catch (InvalidPinException | InsufficientBalanceException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
